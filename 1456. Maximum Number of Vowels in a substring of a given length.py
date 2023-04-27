@@ -1,24 +1,16 @@
 class Solution:
     def maxVowels(self, s: str, k: int) -> int:
-        vowels = ['a','e','i','o','u']
-        max_sum = -float('inf')
-        window_start = 0
-        window_end_iteration = range(k,len(s))
-        window = s[window_start:k]
-        total = sum([ i in vowels for i in window ])
+        vowels = 'aeiou'
+        res = 0
+        cur_vow = 0
         
-        for window_end in window_end_iteration:
-            
-            if total == k:
-                return k
-            else:
-                max_sum = max(max_sum,total)
-                if s[window_start] in vowels:
-                    total -= 1
-                if s[window_end] in vowels:
-                    total += 1
-                    
-                window_start += 1
-            
+        for i,n in enumerate(s):
+            if i >= k: #先判断是否是初始窗口之外的数
+                if s[i - k] in vowels:
+                    cur_vow -= 1
                 
-        return max(max_sum,total)
+            if n in vowels:
+                cur_vow += 1
+                
+            res = max(cur_vow,res)
+        return res
