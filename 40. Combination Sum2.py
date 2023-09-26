@@ -14,6 +14,7 @@ for 选择这层的元素，节点的孩子个数就是该层的元素个数:
 #可能会得到多个重复的组合122
 #因为 1 2 2 得到之后要回溯pop一个2出来，接着把第三个2放进来，又符合，又加入了，这就重复了
 #所以如果接下来要放进去的数和回溯pop出来的结果相等，那就直接continue
+'''
 class Solution:
     def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
         if sum(candidates) < target:
@@ -39,6 +40,39 @@ class Solution:
             path.append(candidates[index])
             self.backtracking(path, index+1, candidates, target)
             self.lastpop = path.pop()
+'''
+#代码随想录用used数组
+class Solution:
+    def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
+        self.result = []
+        candidates.sort()
+        used = [False] * len(candidates)
+        self.backtracking([], 0, candidates, target, used)
+        return self.result
+
+    def backtracking(self,path, startIndex, candidates, target, used):
+        if sum(path) == target:
+            self.result.append(list(path))
+            return
+        for index in range(startIndex, len(candidates)):
+
+            if index > 0 and candidates[index-1] == candidates[index] and not used[index-1]: #树层去重，树枝不需要去重
+                continue
+
+            if sum(path) + candidates[index] > target:
+                break
+            path.append(candidates[index])
+            used[index] = True
+
+            self.backtracking(path, index+1, candidates, target, used)
+
+            path.pop()
+            used[index] = False
+        
+        
+            
+
+
 
 
 
