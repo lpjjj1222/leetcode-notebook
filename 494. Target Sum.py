@@ -47,7 +47,7 @@ class Solution:
         for i in range(1,len(nums)):
             for j in range(Add+1):
                 if j < nums[i]:
-                #如果书包剩下的容量已经放不下i物品了，就只有不放i的选择了
+                #如果书包容量都放不下i物品，就只有不放i的选择了
                     dp[i][j] = dp[i-1][j]
                 else:
                 #如果书包容量允许：
