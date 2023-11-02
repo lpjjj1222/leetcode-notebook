@@ -42,10 +42,9 @@ class Solution:
         #初始化，当书包容量为0的时候用0个物品放满
         dp[0] = 0
 
-        for j in range(1,n+1):
-            for i in range(1,p_num+1):
-                if j >= i*i:
-                    dp[j] = min(dp[j],dp[j-i*i]+1)
+        for i in range(1,p_num+1):
+            for j in range(i*i,n+1):
+                dp[j] = min(dp[j],dp[j-i*i]+1)
         return dp[n]
 
 
