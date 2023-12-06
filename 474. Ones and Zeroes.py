@@ -1,28 +1,25 @@
 class Solution:
     def findMaxForm(self, strs: List[str], m: int, n: int) -> int:
-        #长度小的尽量先遍历
-        strs = sorted(strs, key = lambda x: len(x))
-        
-        #明确dp数组的含义：由于背包容量是二维的，所以定义滚动二维数组或者三维数组instead of 滚动一维数组和二维数组。
-        #dp[i][j]指的是将物品放到容量为i，j的背包中，能放的最大物品数
-        #对滚动一维数组，dp[j] = max(dp[j],dp[j-weight[i]+value[i]]),先遍历物品后遍历背包，背包倒序遍历，因为每个物品只能选一次
-        #因此对于滚动二维数组，dp[i][j] = max(dp[i][j], dp[i-x][j-y]+1)，其中x是遍历到的物品的0的个数，y是1的个数
-        
-        #创建并初始化dp数组
-        dp = [[0] * (n+1) for _ in range(m+1)]
-        #dp[0][0]肯定是0，非0下标的dp数组由于之后要放进max()里比较，也初始化为0
+        #背包容量是二维的，即0的个数和1的个数
+        #一个str是一个物品，其0的个数和1的个数是其重量
+        #本题要求容量为m,n的书包最多能装多少件物品，所以每个str value为1
+        #dp数组的含义是，容量为i,j的书包最多能装的价值为dp[i][j]
+        #m-0, n-1
+        dp = [[0] * (m+1) for _ in range(n+1)]
 
-        for str in strs:
-            for i in range(m,-1,-1):
-                for j in range(n,-1,-1):
-                    x = str.count('0')
-                    y = str.count('1')
-                    if x <= i and y <= j:#如果书包容量允许
-                        dp[i][j] = max(dp[i][j],dp[i-x][j-y] + 1)
-                    #如果书包容量不允许，则不变
-        return dp[m][n]
+        #初始化？
+        #因为递推公式有+1,所以怎么都不会是000000，所以应该直接初始化为0就行
 
-                    
-              
-            
+
+        #递推公式
+        #背包倒序遍历，for循环先物品后背包
+        for string in strs: #物品
+          zeros = string.count('0')
+          ones = string.count('1')
+          for i in range(n,ones-1,-1): #背包容量
+            for j in range(m,zeros-1,-1): #背包容量
+              dp[i][j] = max(dp[i-ones][j-zeros] + 1, dp[i][j])
+        print(dp)
+        return dp[n][m]
+
         
