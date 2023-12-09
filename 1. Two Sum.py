@@ -1,15 +1,16 @@
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
-        mapping={}
-        res=[]
-        
-        #把遍历过的数放在字典里
-        #要找的话直接in
-
-        for i,n in enumerate(nums):
-            if (target-n) in mapping.keys():
-                res.append(i)
-                res.append(mapping[target-n])
-                return res
+        num_dict = {}
+        result = []
+        for i, num in enumerate(nums):
+            if not num_dict or (target-num) not in num_dict:#如果字典空或者字典里找不到匹配的值
+                num_dict[num] = i#将当前值放进字典里
             else:
-                mapping[n] = i
+                result.append(i)
+                result.append(nums.index(target-num))
+                break
+        return result
+            
+
+            
+        
