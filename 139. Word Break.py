@@ -1,24 +1,37 @@
-#这题二维数组真搞不出来....只能看代码随想录咯
 class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
-        #s是书包，wordDict里的每个字符串是物品，用字符串把s一部分一部分消掉，意味着用物品将书包填满
-        #定义dp数组：dp[j] = True表示长度为j的字符串，可以被成功拆分
-        #递推公式：i < j ,如果dp[i]=True,即前i个字符串可以被成功拆分，且s[i,j]是出现在wordDict里的单词，则dp[j] = True
-        #初始化dp数组：dp[0] = True,不然如果长度为0就是false,后面全都得是False，非0下标的dp值为False，因为还不知道能否成功拆分
-        #遍历顺序：由于递推公式是从左往右凑单词，物品是需要考虑顺序进背包的，因此排列数对应先背包，后物品
+        #wordDict里面的每个string都是一个物品模型，物品是s的子串，如果子串跟模型一样，就能放进书包
+        #由于要求子串是否在wordDict里，应该把list wordDict转化为set,因为判断元素是否在list里的时间复杂度是O(N),set是O(1)
+        wordDict = set(wordDict)
+        #问题转化为：能否按照某个顺序把物品放进背包，把背包填满
+        #由于wordDict里的string可以重复利用所以是完全背包问题
+        #转化为排列数问题：for循环先背包后物品
+        #dp数组的含义是：如果选物品能够将容量为j的背包填满，则dp[j] = True
+        #递推公式：长度为j的string, 假设已经从前到后遍历到长度i，如果能够确定前面的字符串可以搞定，后面只剩s[i,j],且s[i,j]能够在wordDict找到，则整个长度为j的字符串都可以搞定。
+        #因此，递推公式为dp[i] = True 且 dp[j-i]=True, dp[j] = True
+
         dp = [False] * (len(s)+1)
+        #根据递推公式初始化，由于“且”，递推公式的开头dp[0]如果是False 后面就全部是False了，所以dp[0] = True
         dp[0] = True
 
-        for j in range(1,len(dp)): #书包
-            for i in range(j): #物品:因为dp[i]为前面的string，s[i:j]为剩下的String
-                if dp[i] and s[i:j] in wordDict:
-                    dp[j] = True
-                    break #目前遍历的容量为j的书包就搞定了，break之后继续j++遍历
-
+        for j in range(1, len(s)+1):
+          for i in range(j):  #物品是s[i,j]
+            if dp[i]==True and s[i:j] in wordDict:
+              dp[j] = True
         return dp[len(s)]
-                
+
+
+            
+
+
+
 
         
+
+        
+
+
+
 
         
 

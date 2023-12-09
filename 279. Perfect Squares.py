@@ -1,51 +1,18 @@
-'''
-#二维数组
 class Solution:
     def numSquares(self, n: int) -> int:
-        #定义dp数组的含义：填满容量为n的书包最少需要dp件物品
-
-        #确定遍历的物品个数
-        import math
-        p_num = int(math.sqrt(n))
-    
-        #初始化dp数组,由于后面是求min值，所以初始化为无穷大
-        dp = [[float('inf')] * (n+1) for _ in range(p_num+1)]
-        #第0行的物品重量是0，所以不管它 直接从第1行开始遍历
-        #第1行初始化：第一个物品也就是1的重量，因此
-        for j in range(n+1):
-            dp[1][j] = j
-        #第0列初始化：书包容量为0的时候，都是0
-        for i in range(p_num+1):
-            dp[i][0] = 0
-
-        #由于这个是完全背包且求的是多少件物品而不是多少种填满的方法所以不用想是排列数还是组合数
-        #所以先遍历哪个都行,我们这儿先遍历背包后遍历物品吧
-        #遍历到第i个物品，如果拿的话，就是dp[i][j-i*i]+1
-        #如果不拿的话，就是dp[i-1][j]
-        for j in range(1,n+1):
-            for i in range(1,p_num+1):
-                #如果书包容量允许：
-                if j >= i*i:
-                    dp[i][j] = min(dp[i][j-i*i]+1,dp[i-1][j])
-                #如果书包容量不允许：
-                else:
-                    dp[i][j] = dp[i-1][j]
-        return dp[p_num][n]
-'''
-
-#一维数组
-class Solution:
-    def numSquares(self, n: int) -> int:
-        import math
-        p_num = int(math.sqrt(n))
-        dp = [float('inf')] * (n+1)
-        #初始化，当书包容量为0的时候用0个物品放满
+        #完全背包，装满容量为n的书包，最少需要的物品个数,非排列组合，for循环无所谓
+        #装满容量为j的书包最少需要的物品个数为dp[j]
+        #递推公式:dp[j] = min(dp[j],dp[j-num]+1)
+        #根据递推公式，需要将非0下标初始化为无穷大，而dp[0] = 0,因为填满容量为0的书包最少需要0个物品
+        dp = [float('inf')] * (n + 1)
         dp[0] = 0
+        # 遍历物品的时候只需要遍历，1到 n ** (0.5)向下取整，因为比如n=16, 只需要遍历到4的平方就行了，n=17的话，也只需要遍历到4的平方 notice: int(3.5) = 3
 
-        for i in range(1,p_num+1):
-            for j in range(i*i,n+1):
-                dp[j] = min(dp[j],dp[j-i*i]+1)
+        for num in range(1, int(n ** 0.5)+1):
+            for j in range(num * num, n+1):
+                dp[j] = min(dp[j], dp[j-num*num]+1)
         return dp[n]
+        
 
 
 
