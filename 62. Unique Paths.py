@@ -13,8 +13,9 @@ class Solution:
                 if i > 0 and j > 0:
                     dp[i][j] = dp[i-1][j] + dp[i][j-1]
                 elif i == 0 or j == 0:
-                    continue #因为就是初始值1
+                    continue #因为就是初始值1f
         return dp[m-1][n-1]
         
 
         
+
