@@ -1,31 +1,37 @@
 class Solution:
     def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
-        result = []
-        if len(matrix) == 0:
-            return result
+        Ncol = len(matrix[0])
+        Nrow = len(matrix)
+        rounds = math.ceil(len(matrix) / 2)
+        res = []
+        nums = Ncol * Nrow
+        print(matrix)
+        
 
-        col_begin = 0
-        col_end = len(matrix[0]) - 1
-        row_begin = 0
-        row_end = len(matrix) - 1
+        for rd in range(rounds):
+            #第rd行从左向右，[rd:Ncol-rd]
+            for j in range(rd, Ncol-rd):
+                res.append(matrix[rd][j])
+            if len(res) == nums:
+                break
+            #第rd+1行开始到Nrow-rd行结束的每一行的倒数第rd个
+            for i in range(rd+1, Nrow-rd):
+                res.append(matrix[i][Ncol-rd-1])
+            if len(res) == nums:
+                break
+            #第Nrow-rd-1行从右向左，[Ncol-rd-2:rd-1,-1]
+            for j in range(Ncol-rd-2, rd-1,-1):
+                res.append(matrix[Nrow-rd-1][j])
+            if len(res) == nums:
+                break
+            
+            #第Nrow-rd-1行开始到rd+1行结束的每一行的第rd个
+            for i in range(Nrow-rd-2, rd,-1):
+                res.append(matrix[i][rd])
+            if len(res) == nums:
+                break
+        return res
 
-        total_n = len(matrix[0]) * len(matrix)
 
-        while row_begin <= row_end and col_begin <= col_end:  
-            if len(result) < total_n: 
-                for j in range(col_begin,col_end+1):
-                    result.append(matrix[row_begin][j])
-                row_begin += 1
-            if len(result) < total_n: 
-                for i in range(row_begin,row_end+1):
-                    result.append(matrix[i][col_end])
-                col_end -= 1
-            if len(result) < total_n: 
-                for j in range(col_end, col_begin-1, -1):
-                    result.append(matrix[row_end][j])
-                row_end -= 1
-            if len(result) < total_n: 
-                for i in range(row_end, row_begin-1 , -1):
-                    result.append(matrix[i][col_begin])
-                col_begin += 1
-        return result  
+
+        
