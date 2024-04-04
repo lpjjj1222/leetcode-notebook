@@ -1,14 +1,15 @@
-#看代码随想录- -
 class Solution:
     def canJump(self, nums: List[int]) -> bool:
-        if len(nums) == 1:
-           return True
-
-        index, cover = 0 , 0 
-        while index <= cover:
-            cover = max(cover, index + nums[index])
-            if cover >= len(nums) -1:
+        terminal = nums[0]
+        i = 0
+        while i <= terminal:
+            #更新目前能到达的最远的地方
+            terminal = max(terminal, nums[i] + i)
+            if terminal >= len(nums)-1:
                 return True
-            index += 1
+            i += 1
         return False
+            
+
+        
         

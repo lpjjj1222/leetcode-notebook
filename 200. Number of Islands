@@ -1,0 +1,28 @@
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        def dfs(i, j):
+            grid[i][j] = '0'
+            neighbour = [(i+1,j),(i-1,j),(i,j+1),(i,j-1)]
+            for n in neighbour:
+                row = n[0]
+                col = n[1]
+                if 0 <= row < nRow and 0 <= col < nCol and grid[row][col] == '1' :
+                    dfs(row, col)
+        nRow = len(grid)
+        nCol = len(grid[0])
+        count = 0
+        for i in range(nRow):
+            for j in range(nCol):
+                if grid[i][j] == '1':
+                    #深搜地把当前grid和相连的为1的grid变成0
+                    dfs(i,j)
+                    count += 1
+        return count
+        
+        
+
+
+
+
+
+        

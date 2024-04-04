@@ -1,21 +1,22 @@
 class Solution:
     def maxVowels(self, s: str, k: int) -> int:
-        window = 0
-        vowels = set(['a','e','i','o','u'])
-        for index in range(k):
-            if s[index] in vowels:
-                window += 1
-        res = window
-        
-        index += 1
-        while index < len(s):
-            if s[index] in vowels:
-                window += 1
-            if s[index-k] in vowels:
-                window -= 1
-            res = max(res,window)
-            index += 1
+        res = 0
+        vow = ['a','e','i','o','u']
+        left, right = 0 , 0
+        s = list(s)
+        count = 0
+        for right in range(len(s)):
+            if right >= k:
+                # 左边界收缩
+                if s[left] in vow:
+                    count -= 1
+                left += 1
+            # 右边界扩张
+            if s[right] in  vow:
+                count += 1
+            res = max(res,count)
         return res
+
             
 
 

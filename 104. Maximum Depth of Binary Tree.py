@@ -8,24 +8,24 @@
 #层序遍历（广度遍历）
 '''
 class Solution:
-    from collections import deque
     def maxDepth(self, root: Optional[TreeNode]) -> int:
-        level = 0
-
         if not root:
             return 0
         
-        q = deque([root])
+        q = deque()
+        q.append(root)
+        level_count = 0
+
         while q:
-            for _ in range(len(q)):
+            level_size = len(q)
+            for _ in range(level_size):
                 node = q.popleft()
-                if node.right:
-                    q.append(node.right)
                 if node.left:
                     q.append(node.left)
-            level += 1
-        
-        return level
+                if node.right:
+                    q.append(node.right)
+            level_count += 1
+        return level_count
 '''
 
 #深度遍历 核心：求最大深度其实就是根节点的高度

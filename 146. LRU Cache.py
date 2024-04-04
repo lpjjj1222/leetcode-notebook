@@ -1,88 +1,76 @@
-# Your LRUCache object will be instantiated and called as such:
-# obj = LRUCache(capacity)
-# param_1 = obj.get(key)
-# obj.put(key,value)
-
-#双向链表+哈希表
-
-#要求O（1）去访问，哈希表可以做到
-#需要更新新的值和顺序，想到栈、队列、链表
-#综合而来，使哈希表的value包含链表的位置信息
-
-#构建双向链表：
-#每一个listnode有了key和value的属性,key对应字典里的key
 class ListNode:
-    def __init__(self, key, value, next=None, prev=None):
+    def __init__(self, val = 0,key = 0 ):
+        self.val = val
         self.key = key
-        self.value = value
-        self.next = next
-        self.prev = prev
-
+        self.next = None
+        self.prev = None
+        
 class LRUCache:
+    #由于要更新最新用到的key-value，所以会删除中间节点、在头部尾部插入节点，要方便插入删除O(1)->双向链表
+    #（数组删除插入中间值O(n)因为需要移动元素保持连续性
+    #每次更新或者访问都把对应的node删除移到头部，Capacity不够的时候就淘汰尾部的node
+    #由于方便访问中间的key-value O(1) ->哈希表
+
+    
     def __init__(self, capacity: int):
-        self.dic = dict() #字典里的每个key对应一个listnode
-        #key值=字典的key值，用于O（1）定位，value指向node
         self.capacity = capacity
-        self.head = ListNode(0,0)
+        self.map = dict()
+        #字典的key对应listnode上的key, value对应node
+
+        #初始化链表
+        self.head = ListNode(-1,-1)
         self.tail = ListNode(-1,-1)
-        #构建链表，现在只有head tail节点
         self.head.next = self.tail
-        self.tail.prev = self.head
+        self.tail.next =self.head
+        
+        
 
     def get(self, key: int) -> int:
-        if key in self.dic:#如果存在
-            node = self.dic[key] #提取node
-            #将这个node放到链表尾部，因为淘汰是淘汰头部
-            #step1:将node移出linklist
-            self.removeFromList(node)
-            #step2:将node从尾部插入
-            self.insertIntoTail(node)
-            print("现在在最后的是",self.tail.prev.value)
-            return node.value
-        else:
-            return -1
-    
+        if key in self.map:
+            node = self.map[key]
+            ans = node.val
+            self.deleteNode(node)
+            self.addToHead(node)
+            return ans
+        return - 1
+        
+
     def put(self, key: int, value: int) -> None:
-        if key in self.dic:#如果key存在，更新对应的value值
-            node = self.dic[key]
-            node.value = value
-            #更新后放到链表尾部
-            self.removeFromList(node)
-            self.insertIntoTail(node)
-        else:#如果key不存在
-            #如果容量不够，需要先淘汰头部再加入
-            if len(self.dic) >= self.capacity:
-                self.removeFromHead()
-                print("淘汰头部后，头部现在是",self.head.next.value)
-            #如果容量够，直接在尾部加入
-            node = ListNode(key,value)
-            self.insertIntoTail(node)
-            #记得同步操作字典记录
-            self.dic[key] = node
-    def removeFromList(self,node):
+        #更新or新增
+        if key in self.map: #更新
+            node = self.map[key]
+            self.deleteNode(node)
+        else:
+            if len(self.map) == self.capacity: #新增且需要淘汰尾部
+                self.deleteNode(self.tail.prev)
+        newNode = ListNode(val=value,key=key)
+        self.addToHead(newNode)
+        #同步操作字典
+        self.map[key] = newNode
+        
+
+    def deleteNode(self, node):
         prev_node = node.prev
         next_node = node.next
         prev_node.next = next_node
         next_node.prev = prev_node
-        #记得同步操作字典记录
-        del self.dic[node.key]
-    
-    def insertIntoTail(self, node):
-        tail_original_prev_node = self.tail.prev
-        self.tail.prev = node
-        node.next = self.tail
-        tail_original_prev_node.next = node
-        node.prev = tail_original_prev_node
-        #记得同步操作字典记录
-        self.dic[node.key] = node
-    
-    def removeFromHead(self):
-        head_original_next = self.head.next
-        self.head.next = head_original_next.next
-        head_original_next.next.prev = self.head
-        #记得同步操作字典记录
-        del self.dic[head_original_next.key]
+        #同步操作字典
+        del self.map[node.key]
+
+    def addToHead(self, node):
+        initial_first_node = self.head.next
+        self.head.next = node
+        node.next = initial_first_node
+        node.prev = self.head
+        initial_first_node.prev = node
+        #同步操作字典
+        self.map[node.key] = node
 
 
+        
 
 
+# Your LRUCache object will be instantiated and called as such:
+# obj = LRUCache(capacity)
+# param_1 = obj.get(key)
+# obj.put(key,value)

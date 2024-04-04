@@ -1,0 +1,25 @@
+class Solution:
+    def jump(self, nums: List[int]) -> int:
+        maxReach, nextMaxReach = 0, 0
+        i = 0
+        jump = 0
+        #edge case: nums = [0]
+        if len(nums) == 1:
+            return 0
+        #记录从当前i出发最远能到达的地方:maxReach
+        #记录再下一跳最远能到哪里: nextMaxReach
+        #当到达从当前i出发能到的最远的地方就jump+1并把nextMaxReach赋值给maxReach
+        for i in range(len(nums)):
+            nextMaxReach = max(nextMaxReach, nums[i]+i)
+            if i == maxReach:
+                jump += 1
+                maxReach = nextMaxReach
+                #如果已经判断这是最后一跳了就直接返回
+                if maxReach >= len(nums) - 1:
+                    return jump
+
+        
+
+
+
+        

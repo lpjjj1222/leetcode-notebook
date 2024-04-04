@@ -3,16 +3,20 @@
 #由于记录的是最大的窗口长度，所以仅仅在增大窗口的时候更新窗口长度
 class Solution:
     def longestOnes(self, nums: List[int], k: int) -> int:
-        left = right = zeros = window_size =  0
+        zeros = 0
+        left, right = 0, 0
+        res = 0
         for right in range(len(nums)):
             if nums[right] == 0:
                 zeros += 1
                 while zeros > k:
-                    left += 1
-                    if nums[left-1] == 0:
+                    if nums[left] == 0:
                         zeros -= 1
-            window_size = max(window_size, right-left+1)        
-        return window_size
+                    left += 1
+                # 左边界收缩直到zeros为k
+            res = max(res, right-left+1)
+        return res
+        
 
             
 
