@@ -1,0 +1,12 @@
+class Solution:
+    def longestCommonPrefix(self, strs: List[str]) -> str:
+        template = strs[0]
+        res = 0
+        for i in range(1,len(template)+1):
+            prefix = template[:i]
+            for letter in strs:
+                if len(letter) < len(prefix) or letter[:i] != prefix  :
+                    return template[:i-1]
+        return template
+
+        
