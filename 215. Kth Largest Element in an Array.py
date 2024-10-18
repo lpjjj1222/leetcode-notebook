@@ -1,13 +1,16 @@
-import heapq
 class Solution:
     def findKthLargest(self, nums: List[int], k: int) -> int:
-        min_heap = nums[:k]
-        heapq.heapify(min_heap)
+        #第K个的元素 ->维持size = K的最小堆,只有比堆顶大的才能进去
+        minHeap = []
+        for n in nums:
+            if len(minHeap) < k:
+                heapq.heappush(minHeap, n)
+            else:
+                if n > minHeap[0]:
+                    heapq.heappop(minHeap)
+                    heapq.heappush(minHeap,n)
+        return minHeap[0]
+     
 
-        for num in nums[k:]:
-            if num > min_heap[0]:
-                heapq.heappop(min_heap)
-                heapq.heappush(min_heap, num)
 
-        return  min_heap[0] #堆顶即是kth largest element
         
