@@ -1,59 +1,33 @@
-#下面这种方法memory limit exceeded
-'''
 class Solution:
-    import random
-    def __init__(self, w: List[int]):
-        self.w = w
-        self.index_list = []
-        for i,ww in enumerate(w):
-            self.index_list += [i] * ww
+    #将权重问题转化为区间大小问题例如【2，3，2】，前缀和为【2，5，7】
+    #第一个区间为【1,2】 第二个为【3，4，5】，第三个为【6，7】
+    #随机在1-7之间选择一个数，这个数落到每个区间的可能性=对应index的权重
+    #落到哪个区间就相当于选择了哪个index
 
-    def pickIndex(self) -> int:
-        random_index = random.randint(0,len(self.index_list)-1)
-        return self.index_list[random_index]
-# Your Solution object will be instantiated and called as such:
-# obj = Solution(w)
-# param_1 = obj.pickIndex()
-'''
-#下面这个方法空间复杂度O(1)因为没有用额外空间，但时间复杂度是O(W),W是列表的长度，当列表很长时间复杂度就会比较差
-'''
-class Solution:
-    import random
     def __init__(self, w: List[int]):
+        #构造前缀和数组
         self.w = w
-    def pickIndex(self) -> int:
-        random_n = random.randint(0, sum(self.w)-1)
-        count = -1
-        for i,ww in enumerate(self.w):
-            count += ww
-            if count >= random_n:
-                return i
-'''
-#下面这个方法就是用了额外的空间，但是用二分法降低了时间复杂度
-class Solution:
-    import random
-    def __init__(self, w:List[int]):
-        self.w = w
-        self.weight_list = []
-        weight_count = 0
-        for weight in w:
-            weight_count += weight
-            self.weight_list.append(weight_count)
-        self.total_weight = weight_count
-        
-    def pickIndex(self) -> int:
-        random_n = random.randint(1, self.total_weight)
-        left, right = 0, len(self.weight_list)
-        while left < right:
-            print(left)
-            print(right)
-            mid = left + (right-left) // 2
-            if self.weight_list[mid] >= random_n:
-                right = mid
-            else:
-                left = mid + 1
-        return left
+        self.prefix = []
+        total = 0
+        for i, weight in enumerate(w):
+            total += weight
+            self.prefix.append(total)
+
             
+    def pickIndex(self) -> int:
+        #生成一定能落在某个区间的随机数
+        largest = self.prefix[-1]
+        number = random.randint(1, largest)
+        #查找随机数落在哪个区间
+        #self.prefix[1,4,6]找3在哪个区间 [1] [2,3,4] [5,6]
+        left, right = 0 , len(self.w) - 1
+        while left < right:
+            mid = (left + right) // 2
+            if number > self.prefix[mid]:
+                left = mid + 1
+            elif number < self.prefix[mid]:
+                right = mid
+            else: 
+                return mid
+        return right
         
-
-
